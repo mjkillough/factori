@@ -1,0 +1,7 @@
+[package]
+name = "factori"
+version = "0.0.1"
+authors = ["Michael Killough <michaeljkillough@gmail.com>"]
+
+[dependencies]
+mashup = "0.1"
