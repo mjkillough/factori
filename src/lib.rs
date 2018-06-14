@@ -80,11 +80,12 @@ macro_rules! factori {
         }
 
         mashup! {
-            m1["builder"] = $ty Builder;
-            m1["traits_enum"] = $ty Builder Traits;
+            m1["builder"] = _Factori_ $ty _Builder;
+            m1["traits_enum"] = _Factori_ $ty _Builder _Traits;
         }
 
         m1! {
+            #[allow(non_camel_case_types)]
             type "builder" = $ty;
 
             impl $crate::FactoriBuilder for "builder" {
@@ -125,6 +126,7 @@ macro_rules! facori_builder_internal {
             )*
         }
     ) => {
+        #[allow(non_camel_case_types)]
         struct $fields_struct {
             $( $field_name: $field_type ),*
         }
@@ -169,8 +171,8 @@ macro_rules! factori_builder {
         }
     ) => {
         mashup! {
-            m2["fields_struct"] = $ty Builder;
-            m2["traits_enum"] = $ty Builder Traits;
+            m2["fields_struct"] = _Factori_ $ty _Builder;
+            m2["traits_enum"] = _Factori_ $ty _Builder _Traits;
         }
 
         m2! {
@@ -254,7 +256,8 @@ macro_rules! factori_create_internal {
         $(,)*
     ) => {{
         mashup! {
-            m3["traits_enum"] = $ty Traits;
+            // $ty is always a _Builder type our macros define, so there is no Factori_ prefix:
+            m3["traits_enum"] = $ty _Traits;
         }
         m3! {
             $ty {
@@ -269,7 +272,7 @@ macro_rules! factori_create_internal {
 macro_rules! create {
     ($ty:ident) => {{
         mashup! {
-            m4["builder"] = $ty Builder;
+            m4["builder"] = _Factori_ $ty _Builder;
         }
         m4! {
             $crate::FactoriBuilder::build(
@@ -285,7 +288,7 @@ macro_rules! create {
         $(,)*
     ) => {{
         mashup! {
-            m5["builder"] = $ty Builder;
+            m5["builder"] = _Factori_ $ty _Builder;
         }
         m5! {
             $crate::FactoriBuilder::build(
