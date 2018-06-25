@@ -3,7 +3,7 @@
 #[macro_use]
 extern crate factori;
 
-struct Vehicle {
+pub struct Vehicle {
     number_wheels: u8,
     electric: bool,
 }
