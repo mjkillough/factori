@@ -32,7 +32,7 @@ macro_rules! factori_define_traits {
         )*
     ) => {
         #[allow(non_camel_case_types)]
-        enum $enum {
+        pub enum $enum {
             $( $trait_name, )*
         }
 
@@ -86,7 +86,7 @@ macro_rules! factori {
 
         m1! {
             #[allow(non_camel_case_types)]
-            type "builder" = $ty;
+            pub type "builder" = $ty;
 
             impl $crate::FactoriBuilder for "builder" {
                 type Built = $ty;
@@ -127,8 +127,8 @@ macro_rules! facori_builder_internal {
         }
     ) => {
         #[allow(non_camel_case_types)]
-        struct $fields_struct {
-            $( $field_name: $field_type ),*
+        pub struct $fields_struct {
+            $( pub $field_name: $field_type ),*
         }
 
         impl $crate::FactoriDefault for $fields_struct {
