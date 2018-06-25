@@ -1,5 +1,5 @@
 #[macro_export]
-macro_rules! factori_define_traits {
+macro_rules! _factori_define_traits {
     (
         $ty:ident,
         $enum:ident,
@@ -75,7 +75,7 @@ macro_rules! factori {
                 }
             }
 
-            factori_define_traits!(
+            _factori_define_traits!(
                 $ty,
                 "traits_enum",
                  $(
@@ -89,7 +89,7 @@ macro_rules! factori {
 }
 
 #[macro_export]
-macro_rules! facori_builder_internal {
+macro_rules! _facori_builder_internal {
     (
         $fields_struct:ident, $traits_enum:ident,
         {
@@ -118,7 +118,7 @@ macro_rules! facori_builder_internal {
             }
         }
 
-        factori_define_traits!(
+        _factori_define_traits!(
             $fields_struct,
             $traits_enum,
                 $(
@@ -155,7 +155,7 @@ macro_rules! factori_builder {
         }
 
         m2! {
-            facori_builder_internal!("fields_struct", "traits_enum", {
+            _facori_builder_internal!("fields_struct", "traits_enum", {
                 default {
                     $( $field_name: $field_type = $field_value ),*
                 }

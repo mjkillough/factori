@@ -1,6 +1,6 @@
 
 #[macro_export]
-macro_rules! factori_expand_traits {
+macro_rules! _factori_expand_traits {
     (
         $ty:ident,
         $enum:ident
@@ -29,7 +29,7 @@ macro_rules! factori_expand_traits {
     ) => {
         $crate::FactoriTrait::expand(
             $enum::$trait,
-            factori_expand_traits!(
+            _factori_expand_traits!(
                 $ty,
                 $enum,
                 $( $other_trait ),*
@@ -39,7 +39,7 @@ macro_rules! factori_expand_traits {
 }
 
 #[macro_export]
-macro_rules! factori_create_internal {
+macro_rules! _factori_create_internal {
     ($ty:ident) => {
         $ty {
             .. $crate::FactoriDefault::default ()
@@ -59,7 +59,7 @@ macro_rules! factori_create_internal {
         m3! {
             $ty {
                 $($field: $value,)*
-                .. factori_expand_traits!($ty, "traits_enum", $( $trait ),*)
+                .. _factori_expand_traits!($ty, "traits_enum", $( $trait ),*)
             }
         }
     }};
@@ -73,7 +73,7 @@ macro_rules! create {
         }
         m4! {
             $crate::FactoriBuilder::build(
-                factori_create_internal!("builder")
+                _factori_create_internal!("builder")
             )
         }
     }};
@@ -89,7 +89,7 @@ macro_rules! create {
         }
         m5! {
             $crate::FactoriBuilder::build(
-                factori_create_internal!(
+                _factori_create_internal!(
                     "builder",
                     $( :$trait ),*
                     $( $field: $value ),*
