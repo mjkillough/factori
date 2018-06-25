@@ -20,70 +20,16 @@ macro_rules! _factori_define_traits {
                 self.expand($crate::FactoriDefault::default())
             }
 
-            fn expand(self, other: $ty) -> $ty {
+            fn expand(self, _other: $ty) -> $ty {
                 match self {
                     $(
                         $enum::$trait_name => $ty {
                             $( $trait_field: $trait_value, )*
-                            .. other
+                            .. _other
                         }
                     ),*
                 }
             }
-        }
-    };
-}
-
-#[macro_export]
-macro_rules! factori {
-    ($ty:ident, {
-        default {
-            $( $field:ident : $value:expr ),* $(,)*
-        }
-
-        $(
-            trait $trait_name:ident {
-                $( $trait_field:ident : $trait_value:expr ),*
-                $(,)*
-            }
-        )*
-
-        $(,)*
-    }) => {
-        impl $crate::FactoriDefault for $ty {
-            fn default() -> Self {
-                $ty {
-                    $($field : $value,)*
-                }
-            }
-        }
-
-        mashup! {
-            m1["builder"] = _Factori_ $ty _Builder;
-            m1["traits_enum"] = _Factori_ $ty _Builder _Traits;
-        }
-
-        m1! {
-            #[allow(non_camel_case_types)]
-            pub type "builder" = $ty;
-
-            impl $crate::FactoriBuilder for "builder" {
-                type Built = $ty;
-
-                fn build(self) -> Self::Built {
-                    self
-                }
-            }
-
-            _factori_define_traits!(
-                $ty,
-                "traits_enum",
-                 $(
-                    trait $trait_name {
-                        $( $trait_field: $trait_value ),*
-                    }
-                )*
-            );
         }
     };
 }
@@ -130,16 +76,19 @@ macro_rules! _facori_builder_internal {
     };
 }
 
+
 #[macro_export]
-macro_rules! factori_builder {
+macro_rules! _factori_multi_internal {
+    () => {};
+
     (
-        $ty:ident, {
+        $ty:ident, $builder:ident, $trait_enum:ident, {
             default {
                 $( $field_name:ident: $field_type:ty = $field_value:expr ),*
                 $(,)*
             }
 
-            builder |$builder_fields:ident| $builder:tt
+            builder |$builder_fields:ident| $builder_body:tt
 
             $(
                 trait $trait_name:ident {
@@ -148,35 +97,105 @@ macro_rules! factori_builder {
                 }
             )*
         }
+
+        $( $more:tt )*
     ) => {
-        mashup! {
-            m2["fields_struct"] = _Factori_ $ty _Builder;
-            m2["traits_enum"] = _Factori_ $ty _Builder _Traits;
-        }
+        _facori_builder_internal!($builder, $trait_enum, {
+            default {
+                $( $field_name: $field_type = $field_value ),*
+            }
 
-        m2! {
-            _facori_builder_internal!("fields_struct", "traits_enum", {
-                default {
-                    $( $field_name: $field_type = $field_value ),*
+            $(
+                trait $trait_name {
+                    $( $trait_field : $trait_value ),*
                 }
+            )*
+        });
 
-                $(
-                    trait $trait_name {
-                        $( $trait_field : $trait_value ),*
-                    }
-                )*
-            });
+        impl $crate::FactoriBuilder for $builder {
+            type Built = $ty;
+
+            fn build(self) -> Self::Built {
+                let $builder_fields = self;
+                $builder_body
+            }
         }
 
-        m2! {
-            impl $crate::FactoriBuilder for "fields_struct" {
-                type Built = $ty ;
+        _factori_multi_internal!( $( $more )* );
+    };
 
-                fn build(self) -> Self::Built {
-                    let $builder_fields = self;
-                    $builder
+    (
+        $ty:ident, $builder:ident, $trait_enum:ident, {
+            default {
+                $( $field:ident : $value:expr ),* $(,)*
+            }
+
+            $(
+                trait $trait_name:ident {
+                    $( $trait_field:ident : $trait_value:expr ),*
+                    $(,)*
+                }
+            )*
+
+            $(,)*
+        }
+
+        $( $more:tt )*
+    ) => {
+        impl $crate::FactoriDefault for $ty {
+            fn default() -> Self {
+                $ty {
+                    $($field : $value,)*
                 }
             }
+        }
+
+        #[allow(non_camel_case_types)]
+        pub type $builder = $ty;
+
+        impl $crate::FactoriBuilder for $builder {
+            type Built = $ty;
+
+            fn build(self) -> Self::Built {
+                self
+            }
+        }
+
+        _factori_define_traits!(
+            $ty,
+            $trait_enum,
+                $(
+                trait $trait_name {
+                    $( $trait_field: $trait_value ),*
+                }
+            )*
+        );
+
+        _factori_multi_internal!( $( $more )* );
+    }
+}
+
+#[macro_export]
+macro_rules! factori {
+    (
+        $( $ty:ident, $def:tt )*
+    ) => {
+        mashup! {
+            $(
+                m6["builder" $ty] = _Factori_ $ty _Builder;
+                m6["traits_enum" $ty] = _Factori_ $ty _Builder _Traits;
+            )*
+        }
+
+        m6! {
+            _factori_multi_internal!(
+                $(
+                    $ty,
+                    "builder" $ty,
+                    "traits_enum" $ty,
+                    $def
+                )*
+            );
         }
     };
 }

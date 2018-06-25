@@ -1,3 +1,5 @@
+#![recursion_limit="1024"]
+
 #[macro_use]
 extern crate factori;
 
@@ -29,7 +31,7 @@ mod separate_module {
 
 use separate_module::Vehicle;
 
-factori_builder!(Vehicle, {
+factori!(Vehicle, {
     default {
         number_wheels: u8 = 4,
         electric: bool = false,
