@@ -1,4 +1,4 @@
-# Factori
+# Factori [![Build Status](https://travis-ci.org/mjkillough/factori.svg?branch=master)](https://travis-ci.org/mjkillough/factori) [![Crates.io](https://img.shields.io/crates/v/factori.svg)](https://crates.io/crates/factori) [![Docs.rs](https://docs.rs/factori/badge.svg)](https://docs.rs/factori/)
 
 A testing factory library for Rust, inspired by [FactoryBot](https://github.com/thoughtbot/factory_bot). 🤖 🦀
 
