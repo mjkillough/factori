@@ -9,7 +9,8 @@ Factori works on stable Rust >=1.26. It aims to provide a clean, ergonomic synta
 Factori provides two macros: `factori!`, which defines a factory for a type, and `create!` which instantiates it:
 
 ```rust
-// Factori's macros recurse a lot, so you may need to increase the recursion limit:
+// Factori's macros recurse a lot. You may need to tell the compiler to increase its macro
+// recursion limit. It should not affect run-time performance.
 #![recursion_limit="1024"]
 
 #[macro_use]
