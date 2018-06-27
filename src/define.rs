@@ -88,7 +88,7 @@ macro_rules! _factori_multi_internal {
                 $(,)*
             }
 
-            builder |$builder_fields:ident| $builder_body:tt
+            builder $builder_body:tt
 
             $(
                 trait $trait_name:ident {
@@ -116,7 +116,10 @@ macro_rules! _factori_multi_internal {
             type Built = $ty;
 
             fn build(self) -> Self::Built {
-                let $builder_fields = self;
+                $(
+                    #[allow(unused_variables)]
+                    let $field_name = self.$field_name;
+                )*
                 $builder_body
             }
         }

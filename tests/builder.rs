@@ -37,8 +37,8 @@ factori!(Vehicle, {
         electric: bool = false,
     }
 
-    builder |fields| {
-        Vehicle::new(fields.number_wheels, fields.electric)
+    builder {
+        Vehicle::new(number_wheels, electric)
     }
 
     trait bike {
