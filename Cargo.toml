@@ -1,6 +1,6 @@
 [package]
 name = "factori"
-version = "0.0.1"
+version = "0.0.2"
 description = "A factory library for Rust, inspired by FactoryBot. 🤖"
 license = "MIT"
 authors = ["Michael Killough <michaeljkillough@gmail.com>"]
