@@ -1,3 +1,4 @@
+#[doc(hidden)]
 #[macro_export]
 macro_rules! _factori_define_traits {
     (
@@ -34,6 +35,7 @@ macro_rules! _factori_define_traits {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! _facori_builder_internal {
     (
@@ -76,7 +78,7 @@ macro_rules! _facori_builder_internal {
     };
 }
 
-
+#[doc(hidden)]
 #[macro_export]
 macro_rules! _factori_multi_internal {
     () => {};

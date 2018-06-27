@@ -1,4 +1,4 @@
-
+#[doc(hidden)]
 #[macro_export]
 macro_rules! _factori_expand_traits {
     (
@@ -38,6 +38,7 @@ macro_rules! _factori_expand_traits {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! _factori_create_internal {
     ($ty:ident) => {
