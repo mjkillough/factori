@@ -7,6 +7,7 @@ authors = ["Michael Killough <michaeljkillough@gmail.com>"]
 repository = "https://github.com/mjkillough/factori"
 keywords = ["factory", "testing", "test", "fixture"]
 categories = ["development-tools::testing"]
+readme = "README.md"
 
 [badges]
 travis-ci = { repository = "mjkillough/factori", branch = "master" }
