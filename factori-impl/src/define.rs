@@ -1,3 +1,4 @@
+use itertools::zip;
 use proc_macro2::{Ident, TokenStream, TokenTree};
 use proc_macro_rules::rules;
 use quote::quote;
@@ -46,6 +47,10 @@ pub fn define_macro(input: TokenStream) -> TokenStream {
                         feature_values,
                     };
 
+                    if let Some(error) = definition.validate() {
+                        return error;
+                    }
+
                     stream.extend(definition.into_token_stream());
                 }
             );
@@ -69,6 +74,26 @@ struct Definition {
 }
 
 impl Definition {
+    fn validate(&self) -> Option<TokenStream> {
+        let missing_type = zip(&self.field_names, &self.field_types)
+            .filter(|(_, ty)| ty.is_none())
+            .next();
+
+        if let Some((name, _)) = missing_type {
+            if self.builder.is_some() {
+                let error = syn::Error::new(
+                    name.span(),
+                    "Type must be specified if using a custom `builder {}` block.",
+                )
+                .to_compile_error();
+
+                return Some(error);
+            }
+        }
+
+        None
+    }
+
     fn generate_builder(&self) -> TokenStream {
         let ident_builder = ident_builder(&self.ty);
 
