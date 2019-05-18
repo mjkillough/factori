@@ -8,10 +8,11 @@ repository = "https://github.com/mjkillough/factori"
 keywords = ["factory", "testing", "test", "fixture"]
 categories = ["development-tools::testing"]
 readme = "README.md"
+edition = "2018"
 
 [badges]
 travis-ci = { repository = "mjkillough/factori", branch = "master" }
 
-
 [dependencies]
-mashup = "0.1"
+factori-impl = { version = "0.1.0", path = "./factori-impl" }
+proc-macro-hack = "0.5"

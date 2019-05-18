@@ -12,17 +12,31 @@ pub struct Passenger {
     name: &'static str
 }
 
+pub struct Cargo {
+    weight: u8,
+}
+
+// We can define multiple with one macro:
 factori!(
     Vehicle, {
         default {
-            number_wheels: 4,
-            electric: false,
+            number_wheels = 4,
+            electric = false,
         }
     }
 
     Passenger, {
         default {
-            name: "Michael"
+            name = "Michael"
+        }
+    }
+);
+
+// Or call the macro twice:
+factori!(
+    Cargo, {
+        default {
+            weight = 0
         }
     }
 );
@@ -38,6 +52,12 @@ fn vehicle() {
 fn passenger() {
     let default = create!(Passenger);
     assert_eq!(default.name, "Michael");
+}
+
+#[test]
+fn cargo() {
+    let default = create!(Cargo);
+    assert_eq!(default.weight, 0);
 }
 
 #[test]

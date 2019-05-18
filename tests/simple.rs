@@ -10,16 +10,16 @@ pub struct Vehicle {
 
 factori!(Vehicle, {
     default {
-        number_wheels: 4,
-        electric: false,
+        number_wheels = 4,
+        electric = false,
     }
 
-    trait bike {
-        number_wheels: 2,
+    feature bike {
+        number_wheels = 2,
     }
 
-    trait electric {
-        electric: true,
+    feature electric {
+        electric = true,
     }
 });
 

@@ -1,28 +1,23 @@
-extern crate mashup;
+use proc_macro_hack::proc_macro_hack;
+
+#[proc_macro_hack]
+pub use factori_impl::create;
+pub use factori_impl::factori;
 
 #[doc(hidden)]
-#[allow(unused_imports)]
-use mashup::*;
+pub trait Builder {
+    type Ty;
 
-#[macro_use]
-mod create;
-#[macro_use]
-mod define;
-
-#[doc(hidden)]
-pub trait FactoriBuilder {
-    type Built;
-
-    fn build(self) -> Self::Built;
+    fn build(self) -> Self::Ty;
 }
 
 #[doc(hidden)]
-pub trait FactoriDefault {
+pub trait Default {
     fn default() -> Self;
 }
 
 #[doc(hidden)]
-pub trait FactoriTrait<T> {
+pub trait Feature<T> {
     fn default(self) -> T;
-    fn expand(self, other: T) -> T;
+    fn extend(self, other: T) -> T;
 }

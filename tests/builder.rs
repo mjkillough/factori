@@ -41,12 +41,12 @@ factori!(Vehicle, {
         Vehicle::new(number_wheels, electric)
     }
 
-    trait bike {
-        number_wheels: 2,
+    feature bike {
+        number_wheels = 2,
     }
 
-    trait electric {
-        electric: true,
+    feature electric {
+        electric = true,
     }
 });
 
