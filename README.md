@@ -2,17 +2,13 @@
 
 A testing factory library for Rust, inspired by [FactoryBot](https://github.com/thoughtbot/factory_bot). 🤖 🦀
 
-Factori works on stable Rust >=1.26. It aims to provide a clean, ergonomic syntax for instantiating test objects, without sacrificing type-safety.
+Factori works on stable Rust >=1.30. It aims to provide a clean, ergonomic syntax for instantiating test objects, without sacrificing type-safety.
 
 ## Example
 
 Factori provides two macros: `factori!`, which defines a factory for a type, and `create!` which instantiates it:
 
 ```rust
-// Factori's macros recurse a lot. You may need to tell the compiler to increase its macro
-// recursion limit. It should not affect run-time performance.
-#![recursion_limit="1024"]
-
 #[macro_use]
 extern crate factori;
 
@@ -23,12 +19,12 @@ pub struct Vehicle {
 
 factori!(Vehicle, {
     default {
-        number_wheels: 4,
-        electric: false,
+        number_wheels = 4,
+        electric = false,
     }
 
-    trait bike {
-        number_wheels: 2,
+    feature bike {
+        number_wheels = 2,
     }
 });
 

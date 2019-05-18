@@ -62,21 +62,21 @@ fn override_field() {
 }
 
 #[test]
-fn one_trait() {
+fn one_feature() {
     let bike = create!(Vehicle, :bike);
     assert_eq!(bike.number_wheels(), 2);
     assert_eq!(bike.electric(), false);
 }
 
 #[test]
-fn trait_and_override() {
+fn feature_and_override() {
     let electric_bike = create!(Vehicle, :bike, electric: true);
     assert_eq!(electric_bike.number_wheels(), 2);
     assert_eq!(electric_bike.electric(), true);
 }
 
 #[test]
-fn two_traits() {
+fn two_features() {
     let electric_bike = create!(Vehicle, :bike, :electric);
     assert_eq!(electric_bike.number_wheels(), 2);
     assert_eq!(electric_bike.electric(), true);
