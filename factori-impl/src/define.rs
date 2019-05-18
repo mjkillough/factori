@@ -29,7 +29,7 @@ pub fn define_macro(input: TokenStream) -> TokenStream {
         ) => {
             let mut stream = TokenStream::new();
 
-            for_repition!(
+            for_repitition!(
                 (
                     ty, field_names, field_types, field_values, builder,
                     feature_names, feature_fields, feature_values

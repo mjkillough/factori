@@ -1,5 +1,5 @@
-/// Helper for flattening repition in proc-macro-rules.
-macro_rules! for_repition {
+/// Helper for flattening repitition in proc-macro-rules.
+macro_rules! for_repitition {
     ( ( $($name:ident),* ) => $body:tt) => {{
         use itertools::izip;
 
