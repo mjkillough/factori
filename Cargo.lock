@@ -7,7 +7,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "factori"
-version = "0.0.3"
+version = "0.1.0"
 dependencies = [
  "factori-impl 0.1.0",
  "proc-macro-hack 0.5.7 (registry+https://github.com/rust-lang/crates.io-index)",
