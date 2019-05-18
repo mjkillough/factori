@@ -1,6 +1,6 @@
 use proc_macro_hack::proc_macro_hack;
 
-#[proc_macro_hack]
+#[proc_macro_hack(support_nested)]
 pub use factori_impl::create;
 pub use factori_impl::factori;
 

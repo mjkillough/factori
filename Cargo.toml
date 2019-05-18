@@ -16,3 +16,4 @@ travis-ci = { repository = "mjkillough/factori", branch = "master" }
 [dependencies]
 factori-impl = { version = "0.1.0", path = "./factori-impl" }
 proc-macro-hack = "0.5"
+proc-macro-nested = "0.1"
