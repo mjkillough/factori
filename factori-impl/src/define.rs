@@ -107,7 +107,7 @@ impl Definition {
             None => {
                 quote! {
                     #[allow(non_camel_case_types)]
-                    type #ident_builder = #ty;
+                    pub type #ident_builder = #ty;
 
                     impl factori::Default for #ident_builder {
                         fn default() -> Self {
