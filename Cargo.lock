@@ -7,16 +7,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "factori"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
- "factori-impl 0.1.0",
+ "factori-impl 0.1.1",
  "proc-macro-hack 0.5.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "proc-macro-nested 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "factori-impl"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "itertools 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "proc-macro-hack 0.5.7 (registry+https://github.com/rust-lang/crates.io-index)",
