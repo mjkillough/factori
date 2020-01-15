@@ -131,7 +131,7 @@ impl Definition {
                 quote! {
                     #[allow(non_camel_case_types, dead_code)]
                     pub struct #ident_builder {
-                        #( #field_names: #field_types),*
+                        #( pub #field_names: #field_types),*
                     }
 
                     impl factori::Default for #ident_builder {
