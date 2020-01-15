@@ -19,7 +19,7 @@ fn ident_mixins_enum(ty: &Ident) -> Ident {
 }
 
 #[proc_macro]
-pub fn factori(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+pub fn define(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     define::define_macro(input.into()).into()
 }
 
