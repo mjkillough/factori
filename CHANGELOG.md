@@ -5,6 +5,7 @@
 Breaking:
 
  - Rename `feature` to `mixin`.
+ - Change the precedence of `mixin` in `create!()` the one provided last should take precedence.
 
 ## v0.1.1
 

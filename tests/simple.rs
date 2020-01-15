@@ -16,6 +16,10 @@ factori!(Vehicle, {
         number_wheels = 2,
     }
 
+    mixin trike {
+        number_wheels = 3,
+    }
+
     mixin electric {
         electric = true,
     }
@@ -53,4 +57,10 @@ fn two_mixins() {
     let electric_bike = create!(Vehicle, :bike, :electric);
     assert_eq!(electric_bike.number_wheels, 2);
     assert_eq!(electric_bike.electric, true);
+}
+
+#[test]
+fn mixin_precedence() {
+    let electric_bike = create!(Vehicle, :bike, :trike);
+    assert_eq!(electric_bike.number_wheels, 3);
 }

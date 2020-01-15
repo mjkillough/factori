@@ -14,7 +14,7 @@ pub fn create_macro(input: TokenStream) -> TokenStream {
             let ident_builder = ident_builder(&ty);
             let ident_mixins_enum = ident_mixins_enum(&ty);
 
-            let mut mixins = mixins.iter().rev();
+            let mut mixins = mixins.iter();
             let value = if let Some(mixin) = mixins.next() {
                 let initial = quote! {
                     factori::Mixin::default(#ident_mixins_enum::#mixin)
