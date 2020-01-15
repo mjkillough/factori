@@ -1,8 +1,12 @@
 # Factori [![Build Status](https://travis-ci.org/mjkillough/factori.svg?branch=master)](https://travis-ci.org/mjkillough/factori) [![Crates.io](https://img.shields.io/crates/v/factori.svg)](https://crates.io/crates/factori) [![Docs.rs](https://docs.rs/factori/badge.svg)](https://docs.rs/factori/)
 
-A testing factory library for Rust, inspired by [FactoryBot](https://github.com/thoughtbot/factory_bot). 🤖 🦀
+A testing factory library for Rust, inspired by
+[FactoryBot](https://github.com/thoughtbot/factory_bot). 🤖 🦀
 
-Factori works on stable Rust >=1.30. It aims to provide a clean, ergonomic syntax for instantiating test objects, without sacrificing type-safety.
+Factori makes it easy to instantiate your test objects/fixtures in tests while
+providing an ergonomic syntax for defining how they are instantiated.
+
+Factori works on stable Rust >=1.30.
 
 ## Documentation
 
@@ -10,7 +14,8 @@ See [API documentation](https://docs.rs/factori/latest/factori/).
 
 ## Example
 
-Factori provides two macros: `factori!`, which defines a factory for a type, and `create!` which instantiates it:
+Factori provides two macros: `factori!`, which defines a factory for a type,
+and `create!` which instantiates it:
 
 ```rust
 #[macro_use]
@@ -49,7 +54,8 @@ fn main() {
 }
 ```
 
-More examples are available in the [`tests/`](https://github.com/mjkillough/factori/tree/master/tests) directory.
+More examples are available in the
+[`tests/`](https://github.com/mjkillough/factori/tree/master/tests) directory.
 
 ## Testing
 
