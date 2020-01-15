@@ -1,6 +1,6 @@
 [package]
 name = "factori"
-version = "0.1.1"
+version = "1.0.0"
 description = "A factory library for Rust, inspired by FactoryBot. 🤖"
 license = "MIT"
 authors = ["Michael Killough <michaeljkillough@gmail.com>"]
@@ -14,6 +14,6 @@ edition = "2018"
 travis-ci = { repository = "mjkillough/factori", branch = "master" }
 
 [dependencies]
-factori-impl = { version = "0.1.1", path = "./factori-impl" }
+factori-impl = { version = "1.0.0", path = "./factori-impl" }
 proc-macro-hack = "0.5"
 proc-macro-nested = "0.1"
