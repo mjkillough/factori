@@ -23,7 +23,7 @@ factori!(Vehicle, {
         electric = false,
     }
 
-    feature bike {
+    mixin bike {
         number_wheels = 2,
     }
 });

@@ -17,7 +17,7 @@ pub trait Default {
 }
 
 #[doc(hidden)]
-pub trait Feature<T> {
+pub trait Mixin<T> {
     fn default(self) -> T;
     fn extend(self, other: T) -> T;
 }

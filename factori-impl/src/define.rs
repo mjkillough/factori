@@ -4,7 +4,7 @@ use proc_macro_rules::rules;
 use quote::quote;
 use syn::{Expr, Type};
 
-use super::{ident_builder, ident_features_enum};
+use super::{ident_builder, ident_mixins_enum};
 
 pub fn define_macro(input: TokenStream) -> TokenStream {
     rules!(input => {
@@ -19,8 +19,8 @@ pub fn define_macro(input: TokenStream) -> TokenStream {
                     $(builder $builder:tt)?
 
                     $(
-                        feature $feature_names:ident {
-                            $( $feature_fields:ident = $feature_values:expr ),*
+                        mixin $mixin_names:ident {
+                            $( $mixin_fields:ident = $mixin_values:expr ),*
                             $(,)?
                         }
                     )*
@@ -32,7 +32,7 @@ pub fn define_macro(input: TokenStream) -> TokenStream {
             for_repitition!(
                 (
                     ty, field_names, field_types, field_values, builder,
-                    feature_names, feature_fields, feature_values
+                    mixin_names, mixin_fields, mixin_values
                 ) => {
                     let definition = Definition {
                         ty,
@@ -42,9 +42,9 @@ pub fn define_macro(input: TokenStream) -> TokenStream {
                         field_values,
                         field_types,
 
-                        feature_names,
-                        feature_fields,
-                        feature_values,
+                        mixin_names,
+                        mixin_fields,
+                        mixin_values,
                     };
 
                     if let Some(error) = definition.validate() {
@@ -68,9 +68,9 @@ struct Definition {
     field_types: Vec<Option<Type>>,
     field_values: Vec<Expr>,
 
-    feature_names: Vec<Ident>,
-    feature_fields: Vec<Vec<Ident>>,
-    feature_values: Vec<Vec<Expr>>,
+    mixin_names: Vec<Ident>,
+    mixin_fields: Vec<Vec<Ident>>,
+    mixin_values: Vec<Vec<Expr>>,
 }
 
 impl Definition {
@@ -159,25 +159,25 @@ impl Definition {
         }
     }
 
-    fn generate_features(&self) -> TokenStream {
+    fn generate_mixins(&self) -> TokenStream {
         let ident_builder = ident_builder(&self.ty);
-        let ident_features_enum = ident_features_enum(&self.ty);
+        let ident_mixins_enum = ident_mixins_enum(&self.ty);
 
         // Repeat so we can refer to it inside quote!'s #()*:
         let idents_builder = std::iter::repeat(&ident_builder);
-        let idents_features_enum = std::iter::repeat(&ident_features_enum);
+        let idents_mixins_enum = std::iter::repeat(&ident_mixins_enum);
 
-        let feature_names = &self.feature_names;
-        let feature_fields = &self.feature_fields;
-        let feature_values = &self.feature_values;
+        let mixin_names = &self.mixin_names;
+        let mixin_fields = &self.mixin_fields;
+        let mixin_values = &self.mixin_values;
 
         quote! {
             #[allow(non_camel_case_types)]
-            pub enum #ident_features_enum {
-                #( #feature_names ),*
+            pub enum #ident_mixins_enum {
+                #( #mixin_names ),*
             }
 
-            impl factori::Feature<#ident_builder> for #ident_features_enum {
+            impl factori::Mixin<#ident_builder> for #ident_mixins_enum {
                 fn default(self) -> #ident_builder {
                     self.extend(factori::Default::default())
                 }
@@ -186,10 +186,10 @@ impl Definition {
                 fn extend(self, other: #ident_builder) -> #ident_builder {
                     match self {
                         #(
-                            #idents_features_enum::#feature_names => {
+                            #idents_mixins_enum::#mixin_names => {
                                 #idents_builder {
                                     #(
-                                        #feature_fields: #feature_values
+                                        #mixin_fields: #mixin_values
                                     ),* ,
                                     .. other
                                 }
@@ -203,11 +203,11 @@ impl Definition {
 
     fn into_token_stream(&self) -> TokenStream {
         let builder = self.generate_builder();
-        let features = self.generate_features();
+        let mixins = self.generate_mixins();
 
         quote! {
             #builder
-            #features
+            #mixins
         }
     }
 }

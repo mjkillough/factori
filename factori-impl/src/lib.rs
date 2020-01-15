@@ -13,8 +13,8 @@ fn ident_builder(ty: &Ident) -> Ident {
     Ident::new(&ident, ty.span())
 }
 
-fn ident_features_enum(ty: &Ident) -> Ident {
-    let ident = format!("_Factori_Features_{}", ty);
+fn ident_mixins_enum(ty: &Ident) -> Ident {
+    let ident = format!("_Factori_Mixins_{}", ty);
     Ident::new(&ident, ty.span())
 }
 

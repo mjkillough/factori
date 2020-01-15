@@ -2,26 +2,26 @@ use proc_macro2::TokenStream;
 use proc_macro_rules::rules;
 use quote::quote;
 
-use super::{ident_builder, ident_features_enum};
+use super::{ident_builder, ident_mixins_enum};
 
 pub fn create_macro(input: TokenStream) -> TokenStream {
     rules!(input => {
         (
             $ty:ident $(,)?
-            $( : $features:ident ),* $(,)?
+            $( : $mixins:ident ),* $(,)?
             $( $fields:ident: $values:expr ),* $(,)?
         ) => {
             let ident_builder = ident_builder(&ty);
-            let ident_features_enum = ident_features_enum(&ty);
+            let ident_mixins_enum = ident_mixins_enum(&ty);
 
-            let mut features = features.iter().rev();
-            let value = if let Some(feature) = features.next() {
+            let mut mixins = mixins.iter().rev();
+            let value = if let Some(mixin) = mixins.next() {
                 let initial = quote! {
-                    factori::Feature::default(#ident_features_enum::#feature)
+                    factori::Mixin::default(#ident_mixins_enum::#mixin)
                 };
-                features.fold(initial, |acc, feature| {
+                mixins.fold(initial, |acc, mixin| {
                     quote! {
-                        factori::Feature::extend(#ident_features_enum::#feature, #acc)
+                        factori::Mixin::extend(#ident_mixins_enum::#mixin, #acc)
                     }
                 })
             } else {

@@ -12,11 +12,11 @@ factori!(Vehicle, {
         electric = false,
     }
 
-    feature bike {
+    mixin bike {
         number_wheels = 2,
     }
 
-    feature electric {
+    mixin electric {
         electric = true,
     }
 });
@@ -35,21 +35,21 @@ fn override_field() {
 }
 
 #[test]
-fn one_feature() {
+fn one_mixin() {
     let bike = create!(Vehicle, :bike);
     assert_eq!(bike.number_wheels, 2);
     assert_eq!(bike.electric, false);
 }
 
 #[test]
-fn feature_and_override() {
+fn mixin_and_override() {
     let electric_bike = create!(Vehicle, :bike, electric: true);
     assert_eq!(electric_bike.number_wheels, 2);
     assert_eq!(electric_bike.electric, true);
 }
 
 #[test]
-fn two_features() {
+fn two_mixins() {
     let electric_bike = create!(Vehicle, :bike, :electric);
     assert_eq!(electric_bike.number_wheels, 2);
     assert_eq!(electric_bike.electric, true);
