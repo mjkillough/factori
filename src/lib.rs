@@ -119,6 +119,9 @@
 //! messages that aren't self-explanatory, please raise an issue on the GitHub
 //! repository.
 
+// Clippy seems to get confused when testing procedural macros in doctests:
+#![allow(clippy::needless_doctest_main)]
+
 use proc_macro_hack::proc_macro_hack;
 
 /// A macro to instantiate an instance of a factory.
