@@ -4,6 +4,10 @@ A testing factory library for Rust, inspired by [FactoryBot](https://github.com/
 
 Factori works on stable Rust >=1.30. It aims to provide a clean, ergonomic syntax for instantiating test objects, without sacrificing type-safety.
 
+## Documentation
+
+See [API documentation](https://docs.rs/factori/latest/factori/).
+
 ## Example
 
 Factori provides two macros: `factori!`, which defines a factory for a type, and `create!` which instantiates it:
@@ -33,6 +37,9 @@ fn main() {
     assert_eq!(default.number_wheels, 4);
     assert_eq!(default.electric, false);
 
+    // Its type is Vehicle, nothing fancy:
+    let vehicle: Vehicle = default;
+
     let three_wheels = create!(Vehicle, number_wheels: 3);
     assert_eq!(three_wheels.number_wheels, 3);
 
@@ -43,10 +50,6 @@ fn main() {
 ```
 
 More examples are available in the [`tests/`](https://github.com/mjkillough/factori/tree/master/tests) directory.
-
-## Stability
-
-Factori is still brand new, and the syntax may change significantly between point-releases.
 
 ## Testing
 
