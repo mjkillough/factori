@@ -13,7 +13,7 @@ edition = "2018"
 proc-macro = true
 
 [dependencies]
-itertools = "0.8"
+itertools = "0.9"
 proc-macro2 = "0.4"
 proc-macro-rules = "0.2"
 quote = "0.6"
