@@ -1,6 +1,6 @@
 [package]
 name = "factori-impl"
-version = "1.0.0"
+version = "1.1.0"
 description = "You shouldn't use this crate directly. It's internal to factori."
 license = "MIT"
 repository = "https://github.com/mjkillough/factori"
@@ -15,7 +15,6 @@ proc-macro = true
 [dependencies]
 itertools = "0.8"
 proc-macro2 = "0.4"
-proc-macro-hack = "0.5"
 proc-macro-rules = "0.2"
 quote = "0.6"
 syn = "0.15"

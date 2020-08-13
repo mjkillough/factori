@@ -6,7 +6,6 @@ mod create;
 mod define;
 
 use proc_macro2::Ident;
-use proc_macro_hack::proc_macro_hack;
 
 fn ident_builder(ty: &Ident) -> Ident {
     let ident = format!("_Factori_Builder_{}", ty);
@@ -23,7 +22,7 @@ pub fn define(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     define::define_macro(input.into()).into()
 }
 
-#[proc_macro_hack]
+#[proc_macro]
 pub fn create(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     create::create_macro(input.into()).into()
 }

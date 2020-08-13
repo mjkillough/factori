@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0
+
+ - Minimum Rust version: At least 1.45.0.
+ - Remove use of proc-macro-hack.
+
 ## 1.0.0
 
 Breaking:

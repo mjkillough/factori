@@ -122,8 +122,6 @@
 // Clippy seems to get confused when testing procedural macros in doctests:
 #![allow(clippy::needless_doctest_main)]
 
-use proc_macro_hack::proc_macro_hack;
-
 /// A macro to instantiate an instance of a factory.
 ///
 /// The type must already have had a factory defined using the [`factori!()`]
@@ -183,8 +181,14 @@ use proc_macro_hack::proc_macro_hack;
 /// ```
 ///
 /// [`factori!()`]: macro.factori.html
-#[proc_macro_hack(support_nested)]
-pub use factori_impl::create;
+#[macro_export]
+macro_rules! create {
+    // We define a simple macro so that the documentation doesn't state this
+    // is a re-export from factori-impl. This also allows us to write docs here.
+    ($($input:tt)*) => {
+        $crate::factori_impl::create!($($input)*);
+    }
+}
 
 #[doc(hidden)]
 pub use factori_impl;
