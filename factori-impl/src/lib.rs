@@ -1,7 +1,5 @@
 extern crate proc_macro;
 
-#[macro_use]
-mod utils;
 mod create;
 mod define;
 
@@ -19,10 +17,10 @@ fn ident_mixins_enum(ty: &Ident) -> Ident {
 
 #[proc_macro]
 pub fn define(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    define::define_macro(input.into()).into()
+    define::define_macro(input)
 }
 
 #[proc_macro]
 pub fn create(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    create::create_macro(input.into()).into()
+    create::create_macro(input)
 }

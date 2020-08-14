@@ -1,81 +1,152 @@
 use itertools::zip;
 use proc_macro2::{Ident, TokenStream, TokenTree};
-use proc_macro_rules::rules;
 use quote::quote;
-use syn::{Expr, Type};
+use syn::parse::{Parse, ParseStream, Result};
+use syn::{braced, parse_macro_input, Expr, Token, Type};
 
 use super::{ident_builder, ident_mixins_enum};
 
-pub fn define_macro(input: TokenStream) -> TokenStream {
-    rules!(input => {
-        (
-            $(
-                $ty:ident, {
-                    default {
-                        $( $field_names:ident $(: $field_types:ty)? = $field_values:expr ),*
-                        $(,)?
-                    }
+struct DefaultBlock {
+    fields: Vec<Ident>,
+    types: Vec<Option<Type>>,
+    values: Vec<Expr>,
+}
 
-                    $(builder $builder:tt)?
+impl Parse for DefaultBlock {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let inner;
+        braced!(inner in input);
 
-                    $(
-                        mixin $mixin_names:ident {
-                            $( $mixin_fields:ident = $mixin_values:expr ),*
-                            $(,)?
-                        }
-                    )*
-                }
-            )*
-        ) => {
-            let mut stream = TokenStream::new();
+        let mut fields = Vec::new();
+        let mut types = Vec::new();
+        let mut values = Vec::new();
 
-            for_repitition!(
-                (
-                    ty, field_names, field_types, field_values, builder,
-                    mixin_names, mixin_fields, mixin_values
-                ) => {
-                    let definition = Definition {
-                        ty,
-                        builder,
+        loop {
+            if inner.is_empty() {
+                break;
+            }
 
-                        field_names,
-                        field_values,
-                        field_types,
+            fields.push(inner.parse()?);
 
-                        mixin_names,
-                        mixin_fields,
-                        mixin_values,
-                    };
+            // Optional type. If it's specified for one field it needs to be specified for all.
+            // Should be specified only if there is a builder {} block.
+            // This is enforced in Definition::validate().
+            if inner.peek(Token![:]) {
+                inner.parse::<Token![:]>()?;
+                types.push(Some(inner.parse()?));
+            } else {
+                types.push(None);
+            }
 
-                    if let Some(error) = definition.validate() {
-                        return error;
-                    }
+            inner.parse::<Token![=]>()?;
+            values.push(inner.parse()?);
 
-                    stream.extend(definition.into_token_stream());
-                }
-            );
-
-            stream.into()
+            if inner.peek(Token![,]) {
+                inner.parse::<Token![,]>()?;
+            }
         }
-    })
+
+        Ok(Self {
+            fields,
+            types,
+            values,
+        })
+    }
+}
+
+struct MixinBlock {
+    name: Ident,
+    fields: Vec<Ident>,
+    values: Vec<Expr>,
+}
+
+impl Parse for MixinBlock {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let name = input.parse()?;
+
+        let inner;
+        braced!(inner in input);
+
+        let mut fields = Vec::new();
+        let mut values = Vec::new();
+
+        loop {
+            if inner.is_empty() {
+                break;
+            }
+
+            fields.push(inner.parse()?);
+            inner.parse::<Token![=]>()?;
+            values.push(inner.parse()?);
+
+            if inner.peek(Token![,]) {
+                inner.parse::<Token![,]>()?;
+            }
+        }
+
+        Ok(Self {
+            name,
+            fields,
+            values,
+        })
+    }
 }
 
 struct Definition {
     ty: Ident,
+
+    default: DefaultBlock,
     builder: Option<TokenTree>,
+    mixins: Vec<MixinBlock>,
+}
 
-    field_names: Vec<Ident>,
-    field_types: Vec<Option<Type>>,
-    field_values: Vec<Expr>,
+impl Parse for Definition {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let ty = input.parse()?;
+        input.parse::<Token![,]>()?;
 
-    mixin_names: Vec<Ident>,
-    mixin_fields: Vec<Vec<Ident>>,
-    mixin_values: Vec<Vec<Expr>>,
+        let inner;
+        braced!(inner in input);
+
+        let mut default: Option<DefaultBlock> = None;
+        let mut builder = None;
+        let mut mixins = Vec::new();
+
+        loop {
+            if inner.is_empty() {
+                break;
+            }
+
+            let key: Ident = inner.parse()?;
+            if key == "default" {
+                if default.is_some() {
+                    return Err(inner.error("default {} block defined twice"));
+                }
+                default = Some(inner.parse()?);
+            } else if key == "builder" {
+                if builder.is_some() {
+                    return Err(inner.error("builder {} block is defined twice"));
+                }
+                builder = Some(inner.parse()?);
+            } else if key == "mixin" {
+                mixins.push(inner.parse()?);
+            }
+        }
+
+        let default = default.ok_or_else(|| inner.error("missing default {} block"))?;
+
+        Ok(Self {
+            ty,
+            default,
+            builder,
+            mixins,
+        })
+    }
 }
 
 impl Definition {
     fn validate(&self) -> Option<TokenStream> {
-        let missing_type = zip(&self.field_names, &self.field_types)
+        let missing_type = zip(&self.default.fields, &self.default.types)
             .filter(|(_, ty)| ty.is_none())
             .next();
 
@@ -98,10 +169,9 @@ impl Definition {
         let ident_builder = ident_builder(&self.ty);
 
         let ty = &self.ty;
-        let field_names = &self.field_names;
-        let field_names2 = &self.field_names;
-        let field_types = &self.field_types;
-        let field_values = &self.field_values;
+        let fields = &self.default.fields;
+        let types = &self.default.types;
+        let values = &self.default.values;
 
         match &self.builder {
             None => {
@@ -112,7 +182,7 @@ impl Definition {
                     impl factori::Default for #ident_builder {
                         fn default() -> Self {
                             #ty {
-                                #( #field_names: #field_values ),*
+                                #( #fields: #values ),*
                             }
                         }
                     }
@@ -131,13 +201,13 @@ impl Definition {
                 quote! {
                     #[allow(non_camel_case_types, dead_code)]
                     pub struct #ident_builder {
-                        #( pub #field_names: #field_types),*
+                        #( pub #fields: #types ),*
                     }
 
                     impl factori::Default for #ident_builder {
                         fn default() -> Self {
                             #ident_builder {
-                                #( #field_names: #field_values),*
+                                #( #fields: #values ),*
                             }
                         }
                     }
@@ -148,7 +218,7 @@ impl Definition {
                         fn build(self) -> Self::Ty {
                             #(
                                 #[allow(unused_variable)]
-                                let #field_names = self.#field_names2;
+                                let #fields = self.#fields;
                             )*
 
                             #builder
@@ -163,13 +233,12 @@ impl Definition {
         let ident_builder = ident_builder(&self.ty);
         let ident_mixins_enum = ident_mixins_enum(&self.ty);
 
-        // Repeat so we can refer to it inside quote!'s #()*:
-        let idents_builder = std::iter::repeat(&ident_builder);
-        let idents_mixins_enum = std::iter::repeat(&ident_mixins_enum);
+        let idents_builder = &ident_builder;
+        let idents_mixins_enum = &ident_mixins_enum;
 
-        let mixin_names = &self.mixin_names;
-        let mixin_fields = &self.mixin_fields;
-        let mixin_values = &self.mixin_values;
+        let mixin_names: Vec<_> = self.mixins.iter().map(|mixin| &mixin.name).collect();
+        let mixin_fields: Vec<_> = self.mixins.iter().map(|mixin| &mixin.fields).collect();
+        let mixin_values: Vec<_> = self.mixins.iter().map(|mixin| &mixin.values).collect();
 
         quote! {
             #[allow(non_camel_case_types)]
@@ -210,4 +279,37 @@ impl Definition {
             #mixins
         }
     }
+}
+
+struct MultipleDefinition {
+    definitions: Vec<Definition>,
+}
+
+impl Parse for MultipleDefinition {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let mut definitions = Vec::new();
+
+        loop {
+            if input.is_empty() {
+                break;
+            }
+            definitions.push(input.parse()?);
+        }
+
+        Ok(Self { definitions })
+    }
+}
+
+pub fn define_macro(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let MultipleDefinition { definitions } = parse_macro_input!(input);
+
+    let mut stream = TokenStream::new();
+    for definition in definitions {
+        if let Some(error) = definition.validate() {
+            return error.into();
+        }
+        stream.extend(definition.into_token_stream());
+    }
+
+    stream.into()
 }

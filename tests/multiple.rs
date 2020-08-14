@@ -7,7 +7,7 @@ pub struct Vehicle {
 }
 
 pub struct Passenger {
-    name: &'static str
+    name: &'static str,
 }
 
 pub struct Cargo {
