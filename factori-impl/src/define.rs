@@ -1,4 +1,3 @@
-use itertools::zip;
 use proc_macro2::{Ident, TokenStream, TokenTree};
 use quote::quote;
 use syn::parse::{Parse, ParseStream, Result};
@@ -146,7 +145,11 @@ impl Parse for Definition {
 
 impl Definition {
     fn validate(&self) -> Option<TokenStream> {
-        let missing_type = zip(&self.default.fields, &self.default.types)
+        let missing_type = self
+            .default
+            .fields
+            .iter()
+            .zip(&self.default.types)
             .filter(|(_, ty)| ty.is_none())
             .next();
 
