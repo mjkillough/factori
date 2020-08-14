@@ -6,7 +6,7 @@ A testing factory library for Rust, inspired by
 Factori makes it easy to instantiate your test objects/fixtures in tests while
 providing an ergonomic syntax for defining how they are instantiated.
 
-Factori works on stable Rust >=1.30.
+Factori works on stable Rust >=1.45.
 
 ## Documentation
 
