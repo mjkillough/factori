@@ -50,6 +50,10 @@ impl Parse for Create {
             fields.push(input.parse()?);
             input.parse::<Token![:]>()?;
             values.push(input.parse()?);
+
+            if input.peek(Token![,]) {
+                input.parse::<Token![,]>()?;
+            }
         }
 
         Ok(Create {

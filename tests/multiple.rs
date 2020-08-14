@@ -63,3 +63,10 @@ fn override_field() {
     let tom = create!(Passenger, name: "Tom");
     assert_eq!(tom.name, "Tom");
 }
+
+#[test]
+fn multiple_fields() {
+    let multiple = create!(Vehicle, number_wheels: 8, electric: true);
+    assert_eq!(multiple.number_wheels, 8);
+    assert_eq!(multiple.electric, true);
+}
