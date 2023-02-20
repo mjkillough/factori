@@ -91,12 +91,15 @@ pub fn create_macro(input: TokenStream) -> TokenStream {
     };
 
     let quoted = quote! {
-        factori::Builder::build(#ident_builder {
-            #(
-                #fields: #values,
-            )*
-            .. #value
-        })
+        factori::Builder::build(
+            #[allow(clippy::needless_update)]
+            #ident_builder {
+                #(
+                    #fields: #values,
+                )*
+                .. #value
+            }
+        )
     };
 
     quoted.into()
